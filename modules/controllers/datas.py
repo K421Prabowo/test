@@ -16,16 +16,14 @@ class Datas():
     def set(self, data):
         param = Data()
         param.id = data[0]
-        param.status = data[1]
-        param.sort = data[2]
-        param.user_created = data[3]
-        param.date_created = data[4]
-        param.user_updated = data[5]
-        param.date_updated = data[6]
-        param.id_stream = data[7]
-        param.quantity = data[8]
-        param.avarage_cost = data[9]
-        param.id_fund = data[10]
+        param.id = data[1]
+        param.type = data[2]
+        param.froms = data[3]
+        param.status = data[4]
+        param.text = data[5]
+        param.attachment = data[6]
+        param.meta = data[7]
+        param.data_date = data[8]
 
         return param
        
@@ -44,10 +42,11 @@ class Datas():
       result = self.set(tempData)
       return result
 
-    def getDetailFunds(self, idFund):
-      sql = f"SELECT * FROM public.datas where id_fund = '{idFund}'"
+    def getAll(self, page, limit):
+      offset = limit * page
+      sql = f"SELECT * FROM public.datas ORDER BY 'id' LIMIT = {limit} OFFSET = {offset}"
       self.cur.execute(sql)
-      tempData = self.cur.fetchone()
+      tempData = self.cur.fetchall()
       result = self.set(tempData)
       return result
 

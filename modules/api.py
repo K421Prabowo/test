@@ -8,11 +8,19 @@ from flask import request
 from config import *
 from modules.libs.upload_data import uploadDatas
 from modules.helpers.logger import getLogger
+from modules.controllers.indexs import Data, Datas
 
 logger = getLogger("api")
 
 class Api:
+    data = Data()
+    objData = Datas()
+    datas = []
+
     def __init__(self):
+        self.data = Data()
+        self.objData = Datas()
+        self.datas = []
         pass
 
     def getData(self):
@@ -21,7 +29,7 @@ class Api:
             page = args.get("page", default=1, type=int)
             limit = args.get("limit", default=10, type=int)
             results = []
-            params = []
+            params = self.objData.getAll(page, limit)
             for item in params:
                 results.append(item)
             return json.dumps(results)
@@ -31,7 +39,8 @@ class Api:
 
     def getDataById(self, id):
         try:
-            results = None
+            params = self.objData.getById
+            results = params
             return json.dumps(results)
         except Exception as e :
             logger.error(e)
