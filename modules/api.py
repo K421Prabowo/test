@@ -1,13 +1,14 @@
 
 import json
 import traceback
-import pandas as pd
 
 from flask import request
+from requests.models import Response
 
 from config import *
 from modules.libs.upload_data import uploadDatas
 from modules.helpers.logger import getLogger
+from modules.helpers.response import getResponse
 from modules.controllers.indexs import Data, Datas
 
 logger = getLogger("api")
@@ -32,43 +33,69 @@ class Api:
             params = self.objData.getAll(page, limit)
             for item in params:
                 results.append(item)
-            return json.dumps(results)
+            return getResponse(200, results)
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
+            return getResponse(404, traceback.format_exc())
 
     def getDataById(self, id):
         try:
-            params = self.objData.getById
-            results = params
-            return json.dumps(results)
+            results = self.objData.getById(id)
+            return getResponse(200, results)
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
+            return getResponse(404, traceback.format_exc())
 
     def setData(self):
         try:
-            results = None
-            return json.dumps(results)
+            jData = request.get_json()
+            
+            param = Data()
+            param.type = jData["type"]
+            param.froms = jData["froms"]
+            param.status = jData["status"]
+            param.text = jData["text"]
+            param.attachment = jData["attachment"]
+            param.meta = jData["meta"]
+            param.data_date = jData["data_date"]
+            
+            results = self.objData.setData(param)
+            return getResponse(200, results)
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
+            return getResponse(404, traceback.format_exc())
 
     def updateData(self, id):
         try:
-            results = None
-            return json.dumps(results)
+            jData = request.get_json
+            
+            param = Data()
+            param.type = jData["type"]
+            param.froms = jData["froms"]
+            param.status = jData["status"]
+            param.text = jData["text"]
+            param.attachment = jData["attachment"]
+            param.meta = jData["meta"]
+            param.data_date = jData["data_date"]
+            
+            results = self.objData.setData(param)
+            return getResponse(200, results)
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
+            return getResponse(404, traceback.format_exc())
 
     def deleteData(self, id):
         try:
-            results = None
-            return json.dumps(results)
+            self.objData.deleteData(id)
+            return getResponse(200, f"delete data with id {id} success")
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
+            return getResponse(404, e)
 
     def uploadData(self):
         try :
@@ -76,11 +103,11 @@ class Api:
                 if field == "file":
                     print('filename:', file.filename)
                     if file.filename:
-                        xls = pd.ExcelFile(file)
-                        logger.info(xls.sheet_names)
-                        uploadDatas(xls, file)
-            return "OK" 
-            # return result
+                        fileName = file.name
+                        out_file = open(fileName,'w')
+                        out_file.write(file.read())
+            return getResponse(200, f"upload data success")
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
+            return getResponse(404, traceback.format_exc())
