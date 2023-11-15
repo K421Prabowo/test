@@ -1,0 +1,23 @@
+# compiled output
+/*/*/*/__pycache__
+/*/*/__pycache__
+/*/__pycache__
+__pycache__
+
+/other
+/logger/*
+/cookies/*
+/upload/*
+
+# logger
+geckodriver.log
+
+# IDE - VSCode
+.vscode/*
+#!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+.env*
+!.env.example
