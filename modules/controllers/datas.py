@@ -62,7 +62,7 @@ class Datas():
       return result
 
     def updateData(self, data: Data):
-      sql = f"SELECT * FROM public.brokers where id = '{data.id}'"
+      sql = f"SELECT * FROM public.datas where id = '{data.id}'"
       self.cur.execute(sql)
       tempdb = self.cur.fetchall()
       if len(tempdb) == 0:
@@ -76,7 +76,7 @@ class Datas():
         return None
 
     def deleteData(self, id: int):
-      sql = f"SELECT * FROM public.brokers where id = '{id}'"
+      sql = f"SELECT * FROM public.datas where id = '{id}'"
       self.cur.execute(sql)
       tempdb = self.cur.fetchall()
       if len(tempdb) == 0:
