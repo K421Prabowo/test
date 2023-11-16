@@ -33,7 +33,7 @@ class Api:
             params = self.objData.getAll(page, limit)
             for item in params:
                 results.append(item)
-            return getResponse(200, results)
+            return getResponse(200, [ob.__dict__ for ob in results])
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
@@ -42,7 +42,7 @@ class Api:
     def getDataById(self, id):
         try:
             results = self.objData.getById(id)
-            return getResponse(200, results)
+            return getResponse(200, results.__dict__)
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
@@ -54,12 +54,12 @@ class Api:
             
             param = Data()
             param.type = jData["type"]
-            param.froms = jData["froms"]
+            param.froms = jData["from"]
             param.status = jData["status"]
             param.text = jData["text"]
             param.attachment = jData["attachment"]
             param.meta = jData["meta"]
-            param.data_date = jData["data_date"]
+            param.data_date = jData["date"]
             
             results = self.objData.setData(param)
             return getResponse(200, results)
@@ -70,16 +70,17 @@ class Api:
 
     def updateData(self, id):
         try:
-            jData = request.get_json
+            jData = request.get_json()
             
             param = Data()
+            param.id = id
             param.type = jData["type"]
-            param.froms = jData["froms"]
+            param.froms = jData["from"]
             param.status = jData["status"]
             param.text = jData["text"]
             param.attachment = jData["attachment"]
             param.meta = jData["meta"]
-            param.data_date = jData["data_date"]
+            param.data_date = jData["date"]
             
             results = self.objData.updateData(param)
             return getResponse(200, results)
@@ -95,7 +96,7 @@ class Api:
         except Exception as e :
             logger.error(e)
             logger.error(traceback.format_exc())
-            return getResponse(404, e)
+            return getResponse(404, traceback.format_exc())
 
     def uploadData(self):
         try :

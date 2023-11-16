@@ -1,8 +1,5 @@
 import json
-from requests.models import Response
+from flask import jsonify 
 
 def getResponse(code, data):
-    res = Response()
-    res.status_code = code
-    res.content = data
-    return res.json()
+    return jsonify(data), code

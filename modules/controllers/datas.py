@@ -32,6 +32,7 @@ class Datas():
       result = []
       for data in tempDatas:
          result.append(self.set(data))
+      conn.commit()
       return result
     
     def getById(self, id):
@@ -39,16 +40,19 @@ class Datas():
       self.cur.execute(sql)
       tempData = self.cur.fetchone()
       result = self.set(tempData)
+      conn.commit()
       return result
 
     def getAll(self, page, limit):
-      offset = limit * page
-      sql = f"SELECT * FROM public.datas ORDER BY 'id' LIMIT = {limit} OFFSET = {offset}"
+      offset = limit * (page - 1)
+      sql = f"SELECT * FROM public.datas ORDER BY id LIMIT {limit} OFFSET {offset}"
+      logger.info(sql)
       self.cur.execute(sql)
       tempDatas = self.cur.fetchall()
       result = []
       for data in tempDatas:
          result.append(self.set(data))
+      conn.commit()
       return result
 
     def setData(self, data: Data):
@@ -59,30 +63,32 @@ class Datas():
                 ) RETURNING id;"""
       self.cur.execute(sql)
       result = self.cur.fetchone()[0]
+      conn.commit()
       return result
 
     def updateData(self, data: Data):
-      sql = f"SELECT * FROM public.datas where id = '{data.id}'"
+      sql = f"SELECT * FROM public.datas where id = {data.id}"
       self.cur.execute(sql)
       tempdb = self.cur.fetchall()
-      if len(tempdb) == 0:
+      if len(tempdb) > 0:
         sql = f"""UPDATE public.datas
                     SET type='{data.type}', froms='{data.froms}', status='{data.status}', text='{data.text}', attachment='{data.attachment}', meta='{data.meta}', data_date='{data.data_date}'
-                WHERE id = '{data.id}' RETURNING id;"""
+                WHERE id = {data.id} RETURNING id;"""
         self.cur.execute(sql)
         result = self.cur.fetchone()[0]
-        return result
+        conn.commit()
+        return {"status": True}
       else:
-        return None
+        return {"status": False}
 
     def deleteData(self, id: int):
-      sql = f"SELECT * FROM public.datas where id = '{id}'"
+      sql = f"SELECT * FROM public.datas where id = {id}"
       self.cur.execute(sql)
       tempdb = self.cur.fetchall()
-      if len(tempdb) == 0:
+      if len(tempdb) > 0:
         sql = f"DELETE FROM public.datas WHERE id = {id};"
         self.cur.execute(sql)
-        result = self.cur.fetchone()[0]
-        return result
+        conn.commit()
+        return {"status": True}
       else:
-        return None
+        return {"status": False}
