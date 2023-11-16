@@ -67,7 +67,7 @@ class Datas():
       tempdb = self.cur.fetchall()
       if len(tempdb) == 0:
         sql = f"""UPDATE public.datas
-                    SET securitas='{data.type}', froms='{data.froms}', status='{data.status}', text='{data.text}', attachment='{data.attachment}', meta='{data.meta}', data_date='{data.data_date}'
+                    SET type='{data.type}', froms='{data.froms}', status='{data.status}', text='{data.text}', attachment='{data.attachment}', meta='{data.meta}', data_date='{data.data_date}'
                 WHERE id = '{data.id}' RETURNING id;"""
         self.cur.execute(sql)
         result = self.cur.fetchone()[0]

@@ -81,7 +81,7 @@ class Api:
             param.meta = jData["meta"]
             param.data_date = jData["data_date"]
             
-            results = self.objData.setData(param)
+            results = self.objData.updateData(param)
             return getResponse(200, results)
         except Exception as e :
             logger.error(e)
